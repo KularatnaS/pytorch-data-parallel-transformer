@@ -7,7 +7,6 @@ from tqdm import tqdm
 import warnings
 import torch
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 # Distributed training
 from torch.utils.data.distributed import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel
@@ -45,9 +44,6 @@ vocab_size = tokenizer.get_vocab_size()
 
 train_ds = TextDataset(tokenizer, train_data_dir, seq_len)
 val_ds = TextDataset(tokenizer, val_data_dir, seq_len)
-
-# Tensorboard
-writer = SummaryWriter(experiment_name)
 
 
 def train_model():

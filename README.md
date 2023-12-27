@@ -45,7 +45,7 @@ Login on each machine and perform the following operations:
 
 Run the following command on each machine (replace `IP_ADDR_MASTER_NODE` with the IP address of the master node):
 
-`torchrun --nproc_per_node=2 --nnodes=2 --rdzv_id=456 --rdzv_backend=c10d --rdzv_endpoint=IP_ADDR_MASTER_NODE:48123 train.py --batch_size 8 --model_folder "/mnt/training-data/weights"`
+`torchrun --nproc_per_node=2 --nnodes=2 --rdzv_id=456 --rdzv_backend=c10d --rdzv_endpoint=IP_ADDR_MASTER_NODE:48123 train.py --model_folder "/mnt/training-data/weights"`
 
 ### Monitoring
 
