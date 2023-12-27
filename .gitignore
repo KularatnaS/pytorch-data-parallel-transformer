@@ -1,0 +1,4 @@
+venv/
+llm.egg-info/
+__pycache__/
+.idea/

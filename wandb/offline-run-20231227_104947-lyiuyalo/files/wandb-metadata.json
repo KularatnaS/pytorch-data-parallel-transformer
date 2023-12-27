@@ -1,0 +1,91 @@
+{
+    "os": "Linux-5.15.0-91-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2023-12-27T10:49:48.095912",
+    "startedAt": "2023-12-27T10:49:47.908103",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--model_folder",
+        "/home/shash/Desktop/pytorch-data-parallel-transformer/weights"
+    ],
+    "state": "running",
+    "program": "train.py",
+    "codePathLocal": "train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "git@github.com:KularatnaS/pytorch-data-parallel-transformer.git",
+        "commit": "cfb9196e0a8f5be7f69f75d98106443c3c2a340b"
+    },
+    "email": "shash.kularatna@correvate.co.uk",
+    "root": "/home/shash/Desktop/pytorch-data-parallel-transformer",
+    "host": "shash-XPS-15-9560",
+    "username": "shash",
+    "executable": "/home/shash/Desktop/pytorch-data-parallel-transformer/venv/bin/python3.8",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2674.3450000000003,
+        "min": 800.0,
+        "max": 3800.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1794.76,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        },
+        {
+            "current": 2800.0,
+            "min": 800.0,
+            "max": 3800.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 447.9818801879883,
+            "used": 315.79362869262695
+        }
+    },
+    "gpu": "NVIDIA GeForce GTX 1050",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX 1050",
+            "memory_total": 4294967296
+        }
+    ],
+    "memory": {
+        "total": 31.195423126220703
+    }
+}
