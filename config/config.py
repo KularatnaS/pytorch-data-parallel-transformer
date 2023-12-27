@@ -4,7 +4,7 @@ def get_config():
 
     return {
         'data_dir': 'data/',
-        'train_data_dir': 'data/train/',
+        'train_data_dir': 'data/val/',
         'val_data_dir': 'data/val/',
         'force_build_tokenizer': 'false',  # 'true' or 'false'
         'tokenizer_file': 'tokenizer/tokenizer.json',

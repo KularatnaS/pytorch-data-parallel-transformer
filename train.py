@@ -1,5 +1,6 @@
 import os
 import argparse
+import wandb
 
 from tqdm import tqdm
 
@@ -77,13 +78,32 @@ def train_model():
             optimizer.load_state_dict(state['optimizer_state_dict'])
             global_step = state['global_step']
             model.load_state_dict(state['model_state_dict'])
+            wandb_run_id = state['wandb_run_id']
             del state
         else:
             print(f"GPU {local_rank} Could not find model weights at {model_filename}")
 
+    # Only initialize W&B on the global rank 0 node
+    if global_rank == 0:
+        wandb.init(
+            # set the wandb project where this run will be logged
+            project="pytorch-data-parallel-transformer",
+            # allow resuming existing run with the same name (in case the rank 0 node crashed)
+            id=wandb_run_id,
+            resume="allow",
+            # track hyperparameters and run metadata
+            config=config
+        )
     # Convert the model to DistributedDataParallel
     # Here we can also specify the bucket_cap_mb parameter to control the size of the buckets
     model = DistributedDataParallel(model, device_ids=[local_rank])
+
+    if global_rank == 0:
+        # define our custom x axis metric
+        wandb.define_metric("global_step")
+        # define which metrics will be plotted against it
+        wandb.define_metric("validation/*", step_metric="epoch")
+        wandb.define_metric("train/*", step_metric="global_step")
 
     for epoch in range(initial_epoch, epochs):
         torch.cuda.empty_cache()
@@ -109,8 +129,7 @@ def train_model():
 
             if global_rank == 0:
                 # log the loss to W&B
-                writer.add_scalar('train loss', loss.item(), global_step)
-                writer.flush()
+                wandb.log({'train/loss': loss.item(), 'global_step': global_step})
 
             # backprop
             loss.backward()
@@ -134,12 +153,14 @@ def train_model():
                 'model_state_dict': model.module.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'global_step': global_step,
+                'wandb_run_id': wandb.run.id  # Save to resume logging data
             }, model_filename)
 
 
 def run_validation(epoch, model, loss_fn, device):
     val_dataloader = DataLoader(val_ds, batch_size=batch_size, shuffle=True)
     model.eval()
+    val_loss_accum = 0
     with torch.no_grad():
         batch_iterator_val = tqdm(val_dataloader, desc=f"Validating Epoch {epoch:02d}")
         for batch in batch_iterator_val:
@@ -150,8 +171,9 @@ def run_validation(epoch, model, loss_fn, device):
             label = batch['label'].to(device)
             val_loss = loss_fn(proj_output.view(-1, vocab_size), label.view(-1))
             batch_iterator_val.set_postfix({'validation loss': val_loss.item()})
-            writer.add_scalar('val loss', val_loss.item(), epoch)
-            writer.flush()
+            val_loss_accum += val_loss.item()
+        loss = val_loss_accum / len(val_dataloader)
+        wandb.log({'validation/loss': loss, 'epoch': epoch})
 
 
 def inference_test(input_text, model, device):
@@ -187,6 +209,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_folder', type=str, default=model_folder)
     args = parser.parse_args()
+    config['model_folder'] = args.model_folder
     model_folder = args.model_folder
 
     # data parallel
